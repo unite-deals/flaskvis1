@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Distance Measurement App</title>
+    <style>
+        canvas {
+            display: block;
+            margin: 20px auto;
+            border: 1px solid black;
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Distance Measurement App</h1>
+    <canvas id="canvas" width="640" height="480"></canvas>
+    <button onclick="measureDistance()">Measure Distance</button>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const points = [];
+
+        const conversionFactor = 0.1; // Conversion factor from pixels to centimeters
+
+        function measureDistance() {
+            if (points.length === 2) {
+                const dx = points[1].x - points[0].x;
+                const dy = points[1].y - points[0].y;
+                const distancePixels = Math.sqrt(dx * dx + dy * dy);
+                const distanceCentimeters = distancePixels * conversionFactor;
+                alert(`Distance: ${distanceCentimeters.toFixed(2)} cm`);
+
+                points.length = 0; // Clear the points array
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            } else {
+                alert('Please select two points.');
+            }
+        }
+
+        canvas.addEventListener('click', function(event) {
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const point = { x, y };
+
+            if (points.length < 2) {
+                points.push(point);
+                drawMarker(point);
+            }
+        });
+
+        function drawMarker(point) {
+            const markerSize = 10;
+            ctx.beginPath();
+            ctx.arc(point.x, point.y, markerSize, 0, 2 * Math.PI);
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 2;
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+            ctx.fill();
+            ctx.stroke();
+        }
+    </script>
+</body>
+</html>
