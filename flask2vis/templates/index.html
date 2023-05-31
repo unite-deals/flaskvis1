@@ -3,6 +3,10 @@
 <head>
     <title>Distance Measurement App</title>
     <style>
+        #video {
+            display: block;
+            margin: 20px auto;
+        }
         canvas {
             display: block;
             margin: 20px auto;
@@ -16,10 +20,12 @@
 </head>
 <body>
     <h1>Distance Measurement App</h1>
+    <video id="video" width="640" height="480" autoplay></video>
     <canvas id="canvas" width="640" height="480"></canvas>
     <button onclick="measureDistance()">Measure Distance</button>
 
     <script>
+        const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const points = [];
@@ -41,6 +47,20 @@
                 alert('Please select two points.');
             }
         }
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                video.srcObject = stream;
+                video.play();
+                video.addEventListener('loadedmetadata', function() {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                });
+            })
+            .catch(function(error) {
+                console.log('Error accessing camera:', error);
+                alert('Failed to access camera. Please make sure you have granted camera permissions.');
+            });
 
         canvas.addEventListener('click', function(event) {
             const rect = canvas.getBoundingClientRect();
