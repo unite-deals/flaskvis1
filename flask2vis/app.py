@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 app = Flask(__name__)
-video_capture = cv2.VideoCapture(0)
+video_capture = cv2.VideoCapture(-1)
 
 camera_matrix = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 dist_coeffs = np.zeros((4, 1))
